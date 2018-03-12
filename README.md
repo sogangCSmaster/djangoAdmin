@@ -1,0 +1,2 @@
+# djangoAdmin
+practice django
