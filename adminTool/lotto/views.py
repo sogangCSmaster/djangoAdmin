@@ -1,7 +1,25 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.http import HttpResponse
+from lotto.models import GuessNumbers
+from .forms import PostForm
 
 # Create your views here.
-def index(response):
-    i = 10
-    return HttpResponse('')
+def index(request):
+    lottos = GuessNumbers.objects.all()
+    return render(request, "lotto/default.html", {'lottos' : lottos})
+
+
+def post(request):
+    if request.method == "POST":
+        form = PostForm(request.POST)
+        if form.is_valid():
+            lotto = form.save(commit = False)
+            lotto.generate()
+            return redirect('index')
+    else:
+        form = PostForm()
+        return render(request, 'lotto/form.html', {'form' : form})
+
+
+def detail(request):
+    return render(request, 'lotto/detail.html')
